@@ -43,7 +43,7 @@ export default function AuthPage() {
       } else {
         alert(data.message || "Authentication failed")
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred. Please try again.")
     } finally {
       setLoading(false)

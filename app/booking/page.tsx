@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar, MapPin, User, Mail, Phone, CreditCard } from "lucide-react"
 import Header from "@/components/Header"
+
+// Define Razorpay response type
+interface RazorpayResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+// Extend the global Window interface to include Razorpay
+declare global {
+  interface Window {
+    Razorpay: new (options: object) => { open: () => void };
+  }
+}
 
 export default function BookingPage() {
   const [step, setStep] = useState(1)
@@ -130,7 +143,7 @@ export default function BookingPage() {
         } else {
           alert(data.message || "Booking failed")
         }
-      } catch (error) {
+      } catch {
         alert("An error occurred. Please try again.")
       } finally {
         setLoading(false)
@@ -168,7 +181,7 @@ export default function BookingPage() {
       } else {
         alert(data.message || "OTP verification failed")
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred. Please try again.")
     } finally {
       setLoading(false)
@@ -199,7 +212,7 @@ export default function BookingPage() {
       } else {
         alert(data.message || "Password creation failed")
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred. Please try again.")
     } finally {
       setLoading(false)
@@ -238,7 +251,7 @@ export default function BookingPage() {
           name: "SavayasYoga",
           description: `${subscriptionPlans.find((p) => p.id === selectedPlan)?.name} Subscription`,
           order_id: data.orderId,
-          handler: async (response: any) => {
+          handler: async (response: RazorpayResponse) => {
             // Verify payment
             const verifyResponse = await fetch("/api/payment/verify", {
               method: "POST",
@@ -272,12 +285,18 @@ export default function BookingPage() {
           },
         }
 
-        const rzp = new (window as any).Razorpay(options)
-        rzp.open()
+        // Check if Razorpay is available before initializing
+        if (window.Razorpay) {
+          const rzp = new window.Razorpay(options)
+          rzp.open()
+        } else {
+          console.error("Razorpay script not loaded")
+          alert("Payment gateway not available. Please try again later.")
+        }
       } else {
         alert(data.message || "Payment initialization failed")
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred. Please try again.")
     } finally {
       setLoading(false)
@@ -285,6 +304,18 @@ export default function BookingPage() {
   }
 
   const selectedTrainer = trainers.find((t) => t.id === formData.trainer)
+
+  // Load Razorpay script dynamically
+  useEffect(() => {
+    const script = document.createElement("script")
+    script.src = "https://checkout.razorpay.com/v1/checkout.js"
+    script.async = true
+    document.body.appendChild(script)
+    
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
@@ -430,7 +461,7 @@ export default function BookingPage() {
                         <SelectContent>
                           {trainers.map((trainer) => (
                             <SelectItem key={trainer.id} value={trainer.id}>
-                              {trainer.name} - {trainer.specialization} ({trainer.areas.join(", ")})
+                              {trainer.name} - {trainer.specialization} ({trainer.areas.join(', ')})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -501,8 +532,8 @@ export default function BookingPage() {
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-6">
                     <div className="text-center">
-                      <h3 className="text-xl font-semibold text-slate-700 mb-2">Verify Your Email</h3>
-                      <p className="text-slate-600">We've sent a 6-digit OTP to {formData.email}</p>
+                      <h3 className="text-3xl font-semibold text-slate-700 mb-2">Verify Your Email</h3>
+                      <p className="text-slate-600">We&apos;ve sent a 6-digit OTP to {formData.email}</p>
                     </div>
 
                     <div className="space-y-2">
@@ -515,7 +546,7 @@ export default function BookingPage() {
                         placeholder="Enter 6-digit OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
-                        className="text-center text-2xl tracking-widest rounded-2xl border-slate-200 focus:border-emerald-300 h-12"
+                        className="text-center text-2xl tracking自杀-widest rounded-2xl border-slate-200 focus:border-emerald-300 h-12"
                         maxLength={6}
                         required
                       />
@@ -649,9 +680,6 @@ export default function BookingPage() {
           )}
         </div>
       </div>
-
-      {/* Razorpay Script */}
-      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     </div>
   )
 }

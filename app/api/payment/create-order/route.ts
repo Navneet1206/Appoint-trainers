@@ -21,7 +21,12 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.split(" ")[1]
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
+    interface JwtPayload {
+      userId: string
+      // add other properties if needed
+      [key: string]: unknown
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as JwtPayload
 
     const { planId } = await request.json()
     const plan = subscriptionPlans[planId as keyof typeof subscriptionPlans]
