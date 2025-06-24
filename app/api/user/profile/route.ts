@@ -14,7 +14,11 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.split(" ")[1]
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
+    interface JwtPayload {
+      userId: string;
+      // add other properties if needed
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as JwtPayload
 
     const user = await User.findById(decoded.userId).populate("currentSubscription")
     if (!user) {

@@ -22,7 +22,11 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.split(" ")[1]
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
+    interface JwtPayload {
+      userId: string;
+      // add other properties if needed
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as JwtPayload
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId, bookingData } = await request.json()
 
