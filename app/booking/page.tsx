@@ -11,12 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { Calendar, MapPin, User, Mail, Phone, CreditCard } from "lucide-react"
+import Header from "@/components/Header"
 
 export default function BookingPage() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [otp, setOtp] = useState("")
   const [showOtpInput, setShowOtpInput] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -81,6 +83,10 @@ export default function BookingPage() {
   const [selectedPlan, setSelectedPlan] = useState("")
 
   useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      setIsLoggedIn(true)
+    }
     const urlParams = new URLSearchParams(window.location.search)
     const trainerId = urlParams.get("trainer")
     if (trainerId) {
@@ -104,29 +110,32 @@ export default function BookingPage() {
 
   const handleSubmitAppointment = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    if (isLoggedIn) {
+      setStep(3) // Directly to payment for logged-in users
+    } else {
+      setLoading(true)
+      try {
+        const response = await fetch("/api/booking/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
 
-    try {
-      const response = await fetch("/api/booking/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+        const data = await response.json()
 
-      const data = await response.json()
-
-      if (response.ok) {
-        setShowOtpInput(true)
-        alert("OTP sent to your email!")
-      } else {
-        alert(data.message || "Booking failed")
+        if (response.ok) {
+          setShowOtpInput(true)
+          alert("OTP sent to your email!")
+        } else {
+          alert(data.message || "Booking failed")
+        }
+      } catch (error) {
+        alert("An error occurred. Please try again.")
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      alert("An error occurred. Please try again.")
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -149,6 +158,9 @@ export default function BookingPage() {
       const data = await response.json()
 
       if (response.ok) {
+        if (data.token) {
+          localStorage.setItem("token", data.token)
+        }
         if (data.isNewUser) {
           setStep(2) // Password creation step
         } else {
@@ -277,18 +289,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-emerald-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-300 to-blue-300 rounded-2xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">SY</span>
-            </div>
-            <span className="text-2xl font-bold text-slate-700">SavayasYoga</span>
-          </Link>
-        </div>
-      </header>
-
+      <Header />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
           {/* Progress Steps */}
@@ -495,7 +496,7 @@ export default function BookingPage() {
                       disabled={loading}
                       className="w-full bg-emerald-400 hover:bg-emerald-500 text-white rounded-2xl h-12 text-lg font-medium"
                     >
-                      {loading ? "Sending OTP..." : "Continue to Verification"}
+                      {loading ? "Sending OTP..." : isLoggedIn ? "Proceed to Payment" : "Continue to Verification"}
                     </Button>
                   </form>
                 ) : (

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
 import { Users, Calendar, Home } from "lucide-react"
+import Header from "@/components/Header"
 
 export default function HomePage() {
   const benefits = [
@@ -73,37 +74,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-emerald-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-300 to-blue-300 rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">SY</span>
-              </div>
-              <span className="text-2xl font-bold text-slate-700">SavayasYoga</span>
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-slate-600 hover:text-emerald-600 transition-colors">
-                Home
-              </Link>
-              <Link href="/trainers" className="text-slate-600 hover:text-emerald-600 transition-colors">
-                Trainers
-              </Link>
-              <Link href="/booking" className="text-slate-600 hover:text-emerald-600 transition-colors">
-                Book Appointment
-              </Link>
-              <Link href="/auth" className="text-slate-600 hover:text-emerald-600 transition-colors">
-                Login
-              </Link>
-            </nav>
-            <Button asChild className="bg-emerald-400 hover:bg-emerald-500 text-white rounded-2xl">
-              <Link href="/booking">Book Now</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       {/* Hero Section */}
       <section className="relative py-20 px-4">
         <div className="container mx-auto text-center">
@@ -317,7 +288,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 SavayasYoga. All rights reserved.</p>
+            <p>© 2024 SavayasYoga. All rights reserved.</p>
           </div>
         </div>
       </footer>

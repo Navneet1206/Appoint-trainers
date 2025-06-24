@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import jwt from "jsonwebtoken"
 import { connectDB } from "@/lib/mongodb"
 import User from "@/models/User"
 
@@ -26,10 +27,21 @@ export async function POST(request: NextRequest) {
 
     const isNewUser = !user.password
 
-    return NextResponse.json({
-      message: "OTP verified successfully",
-      isNewUser,
-    })
+    if (!isNewUser) {
+      // Generate token for existing user
+      const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET || "fallback-secret", {
+        expiresIn: "7d",
+      })
+      return NextResponse.json({
+        message: "OTP verified successfully",
+        token,
+      })
+    } else {
+      return NextResponse.json({
+        message: "OTP verified successfully",
+        isNewUser,
+      })
+    }
   } catch (error) {
     console.error("OTP verification error:", error)
     return NextResponse.json({ message: "OTP verification failed" }, { status: 500 })
