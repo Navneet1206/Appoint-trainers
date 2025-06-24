@@ -25,7 +25,7 @@ const trainers = [
 
 const timeSlots = ["6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"]
 
-const cities = ["Delhi", "Mumbai", "Bangalore", "Chennai", "Pune", "Hyderabad", "Kolkata", "Ahmedabad"]
+const cities = ["Satna", "Rewa", "Jabalpur", "Indore", "Panna", "Hyderabad", "Kolkata", "Ahmedabad"]
 
 export default function BookingPage() {
   const [date, setDate] = useState<Date>()
@@ -181,23 +181,7 @@ export default function BookingPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="trainer" className="text-slate-700 font-medium">
-                  Preferred Trainer
-                </Label>
-                <Select onValueChange={(value) => handleInputChange("trainer", value)}>
-                  <SelectTrigger className="rounded-xl border-slate-200 focus:border-green-500">
-                    <SelectValue placeholder="Select a trainer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {trainers.map((trainer) => (
-                      <SelectItem key={trainer.id} value={trainer.id.toString()}>
-                        {trainer.name} - {trainer.specialization}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">

@@ -19,7 +19,6 @@ const trainers = [
     rating: 4.9,
     location: "Delhi, Mumbai",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹1,500/session",
     availability: "Mon-Fri: 6AM-8PM",
   },
   {
@@ -31,7 +30,6 @@ const trainers = [
     rating: 4.8,
     location: "Bangalore, Chennai",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹1,200/session",
     availability: "All days: 5AM-7PM",
   },
   {
@@ -43,7 +41,6 @@ const trainers = [
     rating: 5.0,
     location: "Pune, Hyderabad",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹1,800/session",
     availability: "Mon-Sat: 6AM-9PM",
   },
   {
@@ -55,7 +52,6 @@ const trainers = [
     rating: 4.9,
     location: "Delhi, Gurgaon",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹2,000/session",
     availability: "Tue-Sun: 7AM-6PM",
   },
   {
@@ -67,7 +63,6 @@ const trainers = [
     rating: 4.7,
     location: "Mumbai, Pune",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹1,300/session",
     availability: "Mon-Fri: 6AM-8PM",
   },
   {
@@ -79,7 +74,6 @@ const trainers = [
     rating: 4.6,
     location: "Bangalore, Mysore",
     image: "/placeholder.svg?height=300&width=300",
-    price: "₹1,400/session",
     availability: "All days: 5AM-9PM",
   },
 ]
@@ -202,7 +196,6 @@ export default function TrainersPage() {
 
                     <div className="pt-2">
                       <p className="text-slate-500 text-sm">{trainer.availability}</p>
-                      <p className="text-lg font-semibold text-slate-800 mt-1">{trainer.price}</p>
                     </div>
 
                     <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white rounded-full mt-4">
