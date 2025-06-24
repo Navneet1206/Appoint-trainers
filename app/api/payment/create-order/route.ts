@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(" ")[1]
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any
 
-    const { planId, bookingData } = await request.json()
+    const { planId } = await request.json()
     const plan = subscriptionPlans[planId as keyof typeof subscriptionPlans]
 
     if (!plan) {
