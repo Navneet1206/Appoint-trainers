@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
       amount: plan.price,
+      trainerName: "To be assigned",
     });
 
   
