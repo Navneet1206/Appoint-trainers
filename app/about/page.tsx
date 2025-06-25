@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
-import { Users, Star, Award, Heart, Target, Shield, CheckCircle, ArrowRight, Clock, MapPin, Sparkles, BookOpen, Lightbulb, Globe } from "lucide-react";
+import { Users, Star, Award, Heart, Target, Shield, CheckCircle, ArrowRight, Clock, MapPin,  BookOpen, Lightbulb, Globe } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -143,7 +143,7 @@ export default function AboutPage() {
                   </h1>
 
                   <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-                    Founded in 2019 with a simple yet powerful vision: make authentic, high-quality yoga accessible to everyone in the comfort of their homes. We've grown from a small startup to India's leading at-home yoga service.
+                    Founded in 2019 with a simple yet powerful vision: make authentic, high-quality yoga accessible to everyone in the comfort of their homes. We&apos;ve grown from a small startup to India&apos;s leading at-home yoga service.
                   </p>
                 </div>
 
@@ -301,7 +301,7 @@ export default function AboutPage() {
                 <span className="text-sm font-medium text-blue-700">Our Journey</span>
               </div>
               <h2 className="text-4xl lg:text-5xl font-bold text-slate-700 mb-6">Milestones That Matter</h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">From a single city startup to India's leading at-home yoga platform</p>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto">From a single city startup to India&apos;s leading at-home yoga platform</p>
             </div>
 
             <div className="relative">
