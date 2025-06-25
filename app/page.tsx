@@ -254,7 +254,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/20 animate-float" style={{ animationDelay: "1s" }}>
+                <div className="absolute -bottom-6 -right-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/20 animate-float animate-delay-1s">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                       <Sparkles className="w-6 h-6 text-blue-600" />
@@ -536,7 +536,7 @@ export default function HomePage() {
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white/20 rounded-2xl px-8 py-6 font-semibold transition">
+              <Button asChild variant="outline" size="lg" className="border-2 border-white text-blue-500 hover:bg-white/20 rounded-2xl px-8 py-6 font-semibold transition">
                 <Link href="/trainers" className="flex items-center gap-2">
                   Meet Our Trainers
                   <Users className="w-5 h-5" />
