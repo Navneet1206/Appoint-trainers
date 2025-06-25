@@ -2,13 +2,14 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Calendar, MapPin, User, Mail, Phone, CreditCard } from "lucide-react"
+import { Calendar, MapPin, User, Mail, Phone, CreditCard, X } from "lucide-react"
 import Header from "@/components/Header"
 
 // Define Razorpay response type
@@ -25,35 +26,89 @@ declare global {
   }
 }
 
+// Custom Popup Component Props
+interface CustomPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  message: string;
+  type: "success" | "error";
+  redirectTo?: string;
+}
+
+const CustomPopup: React.FC<CustomPopupProps> = ({ isOpen, onClose, message, type, redirectTo }) => {
+  const router = useRouter();
+
+  if (!isOpen) return null;
+
+  const handleClose = () => {
+    onClose();
+    if (redirectTo) {
+      router.push(redirectTo);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`bg-white rounded-2xl p-6 max-w-md w-full shadow-xl ${type === "error" ? "border-red-500 border-2" : "border-emerald-500 border-2"}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className={`text-xl font-semibold ${type === "error" ? "text-red-600" : "text-emerald-600"}`}>
+            {type === "success" ? "Success" : "Error"}
+          </h3>
+          <button onClick={handleClose} className="text-slate-500 hover:text-slate-700">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <p className="text-slate-600 mb-6">{message}</p>
+        <Button
+          onClick={handleClose}
+          className={`w-full ${type === "error" ? "bg-red-500 hover:bg-red-600" : "bg-emerald-500 hover:bg-emerald-600"} text-white rounded-xl h-12`}
+        >
+          {redirectTo ? "Continue" : "Close"}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 export default function BookingPage() {
-  const [step, setStep] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [otp, setOtp] = useState("")
-  const [showOtpInput, setShowOtpInput] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     address: "",
     city: "",
-    trainer: "",
+    gender: "",
     date: "",
     time: "",
     specialRequests: "",
     password: "",
-  })
+  });
+  const [popup, setPopup] = useState<{
+    isOpen: boolean;
+    message: string;
+    type: "success" | "error";
+    redirectTo?: string;
+  }>({
+    isOpen: false,
+    message: "",
+    type: "success",
+    redirectTo: undefined,
+  });
 
-  const trainers = [
-    { id: "1", name: "Priya Sharma", specialization: "Hatha Yoga", areas: ["Delhi", "Gurgaon"] },
-    { id: "2", name: "Arjun Patel", specialization: "Vinyasa Flow", areas: ["Mumbai", "Pune"] },
-    { id: "3", name: "Meera Gupta", specialization: "Pranayama", areas: ["Bangalore", "Chennai"] },
-    { id: "4", name: "Rajesh Kumar", specialization: "Ashtanga Yoga", areas: ["Delhi", "Noida"] },
-    { id: "5", name: "Kavya Reddy", specialization: "Yin Yoga", areas: ["Hyderabad", "Bangalore"] },
-    { id: "6", name: "Amit Singh", specialization: "Power Yoga", areas: ["Mumbai", "Thane"] },
-  ]
+  const genders = [
+    { id: "male", name: "Male" },
+    { id: "female", name: "Female" },
+    { id: "random", name: "Random" },
+  ];
 
-  const cities = ["Delhi", "Mumbai", "Bangalore", "Chennai", "Pune", "Hyderabad", "Gurgaon", "Noida", "Thane"]
+  const cities = ["Satna", "Rewa", "Jabalpur", "Bhopal", "Indore", "Gwalior", "Ujjain", "Sagar", "Chhindwara", "Khandwa"];
+
   const timeSlots = [
     "06:00 AM",
     "07:00 AM",
@@ -65,7 +120,7 @@ export default function BookingPage() {
     "07:00 PM",
     "08:00 PM",
     "09:00 PM",
-  ]
+  ];
 
   const subscriptionPlans = [
     {
@@ -90,42 +145,42 @@ export default function BookingPage() {
       sessions: 48,
       description: "2 sessions per week",
     },
-  ]
+  ];
 
-  const [selectedPlan, setSelectedPlan] = useState("")
+  const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (token) {
-      setIsLoggedIn(true)
+      setIsLoggedIn(true);
     }
-    const urlParams = new URLSearchParams(window.location.search)
-    const trainerId = urlParams.get("trainer")
-    if (trainerId) {
-      setFormData((prev) => ({ ...prev, trainer: trainerId }))
+    const urlParams = new URLSearchParams(window.location.search);
+    const genderId = urlParams.get("gender");
+    if (genderId) {
+      setFormData((prev) => ({ ...prev, gender: genderId }));
     }
-  }, [])
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const handleSubmitAppointment = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (isLoggedIn) {
-      setStep(3) // Directly to payment for logged-in users
+      setStep(3); // Directly to payment for logged-in users
     } else {
-      setLoading(true)
+      setLoading(true);
       try {
         const response = await fetch("/api/booking/create", {
           method: "POST",
@@ -133,27 +188,39 @@ export default function BookingPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        })
+        });
 
-        const data = await response.json()
+        const data = await response.json();
 
         if (response.ok) {
-          setShowOtpInput(true)
-          alert("OTP sent to your email!")
+          setShowOtpInput(true);
+          setPopup({
+            isOpen: true,
+            message: "OTP sent to your email!",
+            type: "success",
+          });
         } else {
-          alert(data.message || "Booking failed")
+          setPopup({
+            isOpen: true,
+            message: data.message || "Booking failed. Please try again.",
+            type: "error",
+          });
         }
       } catch {
-        alert("An error occurred. Please try again.")
+        setPopup({
+          isOpen: true,
+          message: "An error occurred. Please try again later.",
+          type: "error",
+        });
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-  }
+  };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("/api/booking/verify-otp", {
@@ -165,32 +232,40 @@ export default function BookingPage() {
           email: formData.email,
           otp: otp,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
         if (data.token) {
-          localStorage.setItem("token", data.token)
+          localStorage.setItem("token", data.token);
         }
         if (data.isNewUser) {
-          setStep(2) // Password creation step
+          setStep(2); // Password creation step
         } else {
-          setStep(3) // Payment step
+          setStep(3); // Payment step
         }
       } else {
-        alert(data.message || "OTP verification failed")
+        setPopup({
+          isOpen: true,
+          message: data.message || "OTP verification failed. Please try again.",
+          type: "error",
+        });
       }
     } catch {
-      alert("An error occurred. Please try again.")
+      setPopup({
+        isOpen: true,
+        message: "An error occurred during OTP verification. Please try again.",
+        type: "error",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleCreatePassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/create-password", {
@@ -202,30 +277,42 @@ export default function BookingPage() {
           email: formData.email,
           password: formData.password,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token)
-        setStep(3) // Payment step
+        localStorage.setItem("token", data.token);
+        setStep(3); // Payment step
       } else {
-        alert(data.message || "Password creation failed")
+        setPopup({
+          isOpen: true,
+          message: data.message || "Password creation failed. Please try again.",
+          type: "error",
+        });
       }
     } catch {
-      alert("An error occurred. Please try again.")
+      setPopup({
+        isOpen: true,
+        message: "An error occurred during password creation. Please try again.",
+        type: "error",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handlePayment = async () => {
     if (!selectedPlan) {
-      alert("Please select a subscription plan")
-      return
+      setPopup({
+        isOpen: true,
+        message: "Please select a subscription plan.",
+        type: "error",
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
       const response = await fetch("/api/payment/create-order", {
@@ -238,9 +325,9 @@ export default function BookingPage() {
           planId: selectedPlan,
           bookingData: formData,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
         // Initialize Razorpay
@@ -252,27 +339,44 @@ export default function BookingPage() {
           description: `${subscriptionPlans.find((p) => p.id === selectedPlan)?.name} Subscription`,
           order_id: data.orderId,
           handler: async (response: RazorpayResponse) => {
-            // Verify payment
-            const verifyResponse = await fetch("/api/payment/verify", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                planId: selectedPlan,
-                bookingData: formData,
-              }),
-            })
+            try {
+              const verifyResponse = await fetch("/api/payment/verify", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  planId: selectedPlan,
+                  bookingData: formData,
+                }),
+              });
 
-            if (verifyResponse.ok) {
-              alert("Payment successful! Redirecting to dashboard...")
-              window.location.href = "/dashboard"
-            } else {
-              alert("Payment verification failed")
+              const verifyData = await verifyResponse.json();
+
+              if (verifyResponse.ok) {
+                setPopup({
+                  isOpen: true,
+                  message: "Payment successful! You will be redirected to your dashboard.",
+                  type: "success",
+                  redirectTo: "/dashboard",
+                });
+              } else {
+                setPopup({
+                  isOpen: true,
+                  message: verifyData.message || "Payment verification failed. Please contact support.",
+                  type: "error",
+                });
+              }
+            } catch {
+              setPopup({
+                isOpen: true,
+                message: "An error occurred during payment verification. Please try again or contact support.",
+                type: "error",
+              });
             }
           },
           prefill: {
@@ -283,45 +387,66 @@ export default function BookingPage() {
           theme: {
             color: "#10b981",
           },
-        }
+        };
 
         // Check if Razorpay is available before initializing
         if (window.Razorpay) {
-          const rzp = new window.Razorpay(options)
-          rzp.open()
+          const rzp = new window.Razorpay(options);
+          rzp.open();
         } else {
-          console.error("Razorpay script not loaded")
-          alert("Payment gateway not available. Please try again later.")
+          console.error("Razorpay script not loaded");
+          setPopup({
+            isOpen: true,
+            message: "Payment gateway not available. Please try again later.",
+            type: "error",
+          });
         }
       } else {
-        alert(data.message || "Payment initialization failed")
+        setPopup({
+          isOpen: true,
+          message: data.message || "Payment initialization failed. Please try again.",
+          type: "error",
+        });
       }
     } catch {
-      alert("An error occurred. Please try again.")
+      setPopup({
+        isOpen: true,
+        message: "An error occurred during payment processing. Please try again later.",
+        type: "error",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const selectedTrainer = trainers.find((t) => t.id === formData.trainer)
+  const selectedGender = genders.find((g) => g.id === formData.gender);
 
   // Load Razorpay script dynamically
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://checkout.razorpay.com/v1/checkout.js"
-    script.async = true
-    document.body.appendChild(script)
-    
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
     return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
       <Header />
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
+          {/* Custom Popup */}
+          <CustomPopup
+            isOpen={popup.isOpen}
+            onClose={() => setPopup((prev) => ({ ...prev, isOpen: false }))}
+            message={popup.message}
+            type={popup.type}
+            redirectTo={popup.redirectTo}
+          />
+
           {/* Progress Steps */}
           <div className="flex items-center justify-center mb-12">
             <div className="flex items-center space-x-4">
@@ -451,17 +576,17 @@ export default function BookingPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="trainer" className="text-slate-700 font-medium">
-                        Select Trainer
+                      <Label htmlFor="gender" className="text-slate-700 font-medium">
+                        Trainer Gender Preference
                       </Label>
-                      <Select value={formData.trainer} onValueChange={(value) => handleSelectChange("trainer", value)}>
+                      <Select value={formData.gender} onValueChange={(value) => handleSelectChange("gender", value)}>
                         <SelectTrigger className="rounded-2xl border-slate-200 focus:border-emerald-300 h-12">
-                          <SelectValue placeholder="Choose your preferred trainer" />
+                          <SelectValue placeholder="Choose your preferred trainer gender" />
                         </SelectTrigger>
                         <SelectContent>
-                          {trainers.map((trainer) => (
-                            <SelectItem key={trainer.id} value={trainer.id}>
-                              {trainer.name} - {trainer.specialization} ({trainer.areas.join(', ')})
+                          {genders.map((gender) => (
+                            <SelectItem key={gender.id} value={gender.id}>
+                              {gender.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -533,7 +658,7 @@ export default function BookingPage() {
                   <form onSubmit={handleVerifyOtp} className="space-y-6">
                     <div className="text-center">
                       <h3 className="text-3xl font-semibold text-slate-700 mb-2">Verify Your Email</h3>
-                      <p className="text-slate-600">We&apos;ve sent a 6-digit OTP to {formData.email}</p>
+                      <p className="text-slate-600">We've sent a 6-digit OTP to {formData.email}</p>
                     </div>
 
                     <div className="space-y-2">
@@ -546,7 +671,7 @@ export default function BookingPage() {
                         placeholder="Enter 6-digit OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
-                        className="text-center text-2xl tracking自杀-widest rounded-2xl border-slate-200 focus:border-emerald-300 h-12"
+                        className="text-center text-2xl tracking-widest rounded-2xl border-slate-200 focus:border-emerald-300 h-12"
                         maxLength={6}
                         required
                       />
@@ -619,8 +744,7 @@ export default function BookingPage() {
                       <span className="font-medium">Name:</span> {formData.fullName}
                     </p>
                     <p>
-                      <span className="font-medium">Trainer:</span> {selectedTrainer?.name} (
-                      {selectedTrainer?.specialization})
+                      <span className="font-medium">Trainer Gender Preference:</span> {selectedGender?.name}
                     </p>
                     <p>
                       <span className="font-medium">Date & Time:</span> {formData.date} at {formData.time}
@@ -681,5 +805,5 @@ export default function BookingPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

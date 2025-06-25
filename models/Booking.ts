@@ -1,4 +1,5 @@
-import mongoose from "mongoose"
+// models/Booking.ts
+import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema(
   {
@@ -14,7 +15,12 @@ const BookingSchema = new mongoose.Schema(
     },
     trainerName: {
       type: String,
-      required: true,
+      required: false, // Changed from required: true to required: false
+    },
+    trainerGenderPreference: {
+      type: String,
+      enum: ["Male", "Female", "Any"],
+      default: "Any",
     },
     fullName: {
       type: String,
@@ -55,7 +61,7 @@ const BookingSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-)
+  }
+);
 
-export default mongoose.models.Booking || mongoose.model("Booking", BookingSchema)
+export default mongoose.models.Booking || mongoose.model("Booking", BookingSchema);

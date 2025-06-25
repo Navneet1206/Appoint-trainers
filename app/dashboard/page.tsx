@@ -120,6 +120,8 @@ export default function DashboardPage() {
               <span className="text-2xl font-bold text-slate-700">SavayasYoga</span>
             </Link>
             <div className="flex items-center space-x-4">
+              
+              <span className="text-slate-600"><Link href="/">Home</Link></span>
               <span className="text-slate-600">Welcome, {userData.name}</span>
               <Button
                 onClick={handleLogout}

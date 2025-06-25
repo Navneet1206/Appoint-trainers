@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -37,7 +37,6 @@ export default function Header() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/trainers", label: "Trainers" },
-    { href: "/booking", label: "Book Appointment" },
   ]
 
   return (
@@ -81,15 +80,35 @@ export default function Header() {
               </Link>
             ))}
             
-            {/* Auth Button */}
+            {/* Auth Section */}
             {isLoggedIn ? (
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                className="text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200"
-              >
-                Logout
-              </Button>
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/dashboard"
+                  className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 group flex items-center space-x-1 ${
+                    isActiveRoute("/dashboard")
+                      ? "text-emerald-600"
+                      : "text-slate-600 hover:text-emerald-600"
+                  }`}
+                >
+                  <User className="h-4 w-4" />
+                  <span>My Profile</span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-emerald-400 transition-all duration-300 ${
+                      isActiveRoute("/dashboard")
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  className="text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200"
+                >
+                  Logout
+                </Button>
+              </div>
             ) : (
               <Link
                 href="/auth"
@@ -168,16 +187,30 @@ export default function Header() {
             {/* Mobile Auth */}
             <div className="pt-2 border-t border-emerald-100">
               {isLoggedIn ? (
-                <Button
-                  onClick={() => {
-                    handleLogout()
-                    closeMobileMenu()
-                  }}
-                  variant="ghost"
-                  className="w-full text-left justify-start px-4 py-3 text-base font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200"
-                >
-                  Logout
-                </Button>
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={closeMobileMenu}
+                    className={`flex items-center space-x-2 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 transform hover:translate-x-2 ${
+                      isActiveRoute("/dashboard")
+                        ? "text-emerald-600 bg-emerald-50 border-l-4 border-emerald-400"
+                        : "text-slate-600 hover:text-emerald-600 hover:bg-emerald-50"
+                    }`}
+                  >
+                    <User className="h-4 w-4" />
+                    <span>My Profile</span>
+                  </Link>
+                  <Button
+                    onClick={() => {
+                      handleLogout()
+                      closeMobileMenu()
+                    }}
+                    variant="ghost"
+                    className="w-full text-left justify-start px-4 py-3 text-base font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200 mt-2"
+                  >
+                    Logout
+                  </Button>
+                </>
               ) : (
                 <Link
                   href="/auth"
