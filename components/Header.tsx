@@ -8,9 +8,11 @@ import { Menu, X, User } from "lucide-react"
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
+    setIsHydrated(true)
     const token = localStorage.getItem("token")
     setIsLoggedIn(!!token)
   }, [])
@@ -36,6 +38,7 @@ export default function Header() {
 
   const navLinks = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     { href: "/trainers", label: "Trainers" },
   ]
 
@@ -81,7 +84,7 @@ export default function Header() {
             ))}
             
             {/* Auth Section */}
-            {isLoggedIn ? (
+            {isHydrated && isLoggedIn ? (
               <div className="flex items-center space-x-4">
                 <Link
                   href="/dashboard"
@@ -109,7 +112,7 @@ export default function Header() {
                   Logout
                 </Button>
               </div>
-            ) : (
+            ) : isHydrated ? (
               <Link
                 href="/auth"
                 className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 group ${
@@ -127,7 +130,7 @@ export default function Header() {
                   }`}
                 />
               </Link>
-            )}
+            ) : null}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -186,7 +189,7 @@ export default function Header() {
             
             {/* Mobile Auth */}
             <div className="pt-2 border-t border-emerald-100">
-              {isLoggedIn ? (
+              {isHydrated && isLoggedIn ? (
                 <>
                   <Link
                     href="/dashboard"
@@ -211,7 +214,7 @@ export default function Header() {
                     Logout
                   </Button>
                 </>
-              ) : (
+              ) : isHydrated ? (
                 <Link
                   href="/auth"
                   onClick={closeMobileMenu}
@@ -223,7 +226,7 @@ export default function Header() {
                 >
                   Login
                 </Link>
-              )}
+              ) : null}
             </div>
 
             {/* Mobile CTA Button */}

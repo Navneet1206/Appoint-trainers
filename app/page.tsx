@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Users, Calendar, Home, Star, CheckCircle, ArrowRight, Play, Award, Clock, MapPin, Heart, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
-
+import Footer from "@/components/Footer"
 export default function HomePage() {
   const benefits = [
     {
@@ -122,6 +122,7 @@ export default function HomePage() {
   ];
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
       <Header />
 
@@ -547,5 +548,7 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+<Footer/>
+    </>
   );
 }

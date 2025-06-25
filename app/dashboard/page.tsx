@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Calendar, Clock, User, LogOut, CheckCircle, XCircle, Loader2 } from "lucide-react"
+import Footer from "@/components/Footer"
 
 interface UserData {
   name: string
@@ -133,6 +134,7 @@ export default function DashboardPage() {
   const daysUntilExpiry = Math.ceil((subscriptionEndDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24))
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
       {/* Header */}
       <header className="bg-white/90 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50 shadow-sm">
@@ -340,5 +342,7 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   )
 }

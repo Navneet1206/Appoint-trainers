@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Calendar, MapPin, User, Mail, Phone, CreditCard, X } from "lucide-react"
 import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 
 // Define Razorpay response type
 interface RazorpayResponse {
@@ -439,6 +440,7 @@ export default function BookingPage() {
   }, []);
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
       <Header />
       <div className="container mx-auto px-4 py-12">
@@ -811,5 +813,7 @@ export default function BookingPage() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }

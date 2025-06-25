@@ -9,7 +9,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search, MapPin, Star } from "lucide-react"
 import Header from "@/components/Header"
-
+import Footer from "@/components/Footer"
 export default function TrainersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
@@ -104,6 +104,7 @@ export default function TrainersPage() {
   })
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50 to-amber-50">
       <Header />
       <div className="container mx-auto px-4 py-12">
@@ -231,5 +232,7 @@ export default function TrainersPage() {
         )}
       </div>
     </div>
+    <Footer />
+    </>
   )
 }
