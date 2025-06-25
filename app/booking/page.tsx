@@ -76,7 +76,7 @@ const CustomPopup: React.FC<CustomPopupProps> = ({ isOpen, onClose, message, typ
 };
 
 export default function BookingPage() {
-  const router = useRouter();
+  
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
@@ -664,7 +664,7 @@ export default function BookingPage() {
                   <form onSubmit={handleVerifyOtp} className="space-y-6">
                     <div className="text-center">
                       <h3 className="text-3xl font-semibold text-slate-700 mb-2">Verify Your Email</h3>
-                      <p className="text-slate-600">We've sent a 6-digit OTP to {formData.email}</p>
+                      <p className="text-slate-600">We&apos;ve sent a 6-digit OTP to {formData.email}</p>
                     </div>
 
                     <div className="space-y-2">
