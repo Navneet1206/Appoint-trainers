@@ -1,4 +1,3 @@
-// models/Booking.ts
 import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema(
@@ -15,7 +14,7 @@ const BookingSchema = new mongoose.Schema(
     },
     trainerName: {
       type: String,
-      required: false, // Changed from required: true to required: false
+      required: false,
     },
     trainerGenderPreference: {
       type: String,

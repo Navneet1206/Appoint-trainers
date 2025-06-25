@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       amount: plan.price,
     });
 
-    // Create booking without trainerName
+  
     await Booking.create({
       userId: user._id,
       subscriptionId: subscription._id,

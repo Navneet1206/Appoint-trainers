@@ -54,7 +54,12 @@ const CustomPopup: React.FC<CustomPopupProps> = ({ isOpen, onClose, message, typ
           <h3 className={`text-xl font-semibold ${type === "error" ? "text-red-600" : "text-emerald-600"}`}>
             {type === "success" ? "Success" : "Error"}
           </h3>
-          <button onClick={handleClose} className="text-slate-500 hover:text-slate-700">
+          <button
+            onClick={handleClose}
+            className="text-slate-500 hover:text-slate-700"
+            title="Close"
+            aria-label="Close"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -515,6 +520,7 @@ export default function BookingPage() {
                             onChange={handleInputChange}
                             className="pl-10 rounded-2xl border-slate-200 focus:border-emerald-300 h-12"
                             required
+                            suppressHydrationWarning={true}
                           />
                         </div>
                       </div>
