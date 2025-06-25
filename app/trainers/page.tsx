@@ -22,7 +22,7 @@ export default function TrainersPage() {
       gender: "Female",
       specialization: "Hatha Yoga",
       experience: 8,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=1",
       serviceAreas: ["Delhi", "Gurgaon"],
       rating: 4.9,
       sessions: 500,
@@ -34,7 +34,7 @@ export default function TrainersPage() {
       gender: "Male",
       specialization: "Vinyasa Flow",
       experience: 6,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=2",
       serviceAreas: ["Mumbai", "Pune"],
       rating: 4.8,
       sessions: 350,
@@ -46,7 +46,7 @@ export default function TrainersPage() {
       gender: "Female",
       specialization: "Pranayama",
       experience: 10,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=3",
       serviceAreas: ["Bangalore", "Chennai"],
       rating: 5.0,
       sessions: 750,
@@ -58,7 +58,7 @@ export default function TrainersPage() {
       gender: "Male",
       specialization: "Ashtanga Yoga",
       experience: 12,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=4",
       serviceAreas: ["Delhi", "Noida"],
       rating: 4.9,
       sessions: 800,
@@ -70,7 +70,7 @@ export default function TrainersPage() {
       gender: "Female",
       specialization: "Yin Yoga",
       experience: 7,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=5",
       serviceAreas: ["Hyderabad", "Bangalore"],
       rating: 4.8,
       sessions: 400,
@@ -82,7 +82,7 @@ export default function TrainersPage() {
       gender: "Male",
       specialization: "Power Yoga",
       experience: 9,
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://picsum.photos/300/300?random=6",
       serviceAreas: ["Mumbai", "Thane"],
       rating: 4.7,
       sessions: 600,
@@ -178,7 +178,7 @@ export default function TrainersPage() {
             >
               <CardContent className="p-0">
                 <div className="aspect-square relative">
-                  <Image src={trainer.image || "/placeholder.svg"} alt={trainer.name} fill className="object-cover" />
+                  <Image src={trainer.image} alt={trainer.name} fill className="object-cover" />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-2xl px-3 py-1 flex items-center space-x-1">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
                     <span className="text-sm font-medium text-slate-700">{trainer.rating}</span>
